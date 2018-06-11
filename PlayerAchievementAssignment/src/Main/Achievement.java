@@ -4,25 +4,27 @@
  * and open the template in the editor.
  */
 package Main;
+import java.io.Serializable;
 
 /**
  *
  * @author Jaron Chen
  */
-public class Achievement {
+public class Achievement implements Serializable{
+    //variables of the class
+    public static final long serialVersionUID = 5950169519310163575L;
     private String Description;
     private int Level;
     private int MaxLevel;
-    private String Username;
 
+    //getters, setters, and constructors for the class
     public Achievement() {
     }
     
-    public Achievement(String Description, int Level, int MaxLevel, String Username) {
+    public Achievement(String Description, int Level, int MaxLevel) {
         this.Description = Description;
         this.Level = Level;
         this.MaxLevel = MaxLevel;
-        this.Username = Username;
     }
 
     public String getDescription() {
@@ -47,14 +49,6 @@ public class Achievement {
 
     public void setMaxLevel(int MaxLevel) {
         this.MaxLevel = MaxLevel;
-    }
-
-    public String getUsername() {
-        return Username;
-    }
-
-    public void setUsername(String Username) {
-        this.Username = Username;
     }
     
 }

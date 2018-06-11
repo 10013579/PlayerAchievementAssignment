@@ -14,59 +14,46 @@ import java.util.List;
  *
  * @author Jaron Chen
  */
-public class CSVRead {
+public class CSVRead {//variables to be used in the methods
     private String csvFile = "";
     private BufferedReader br = null;
     private String line = "";
     private String SplitBy = ",";
-    private ArrayList<Player> player = new ArrayList<Player>();
-    private ArrayList<Achievement> achieve = new ArrayList<Achievement>();
+    private List<Player> player = new ArrayList<Player>();
+    private List<Achievement> achieve = new ArrayList<Achievement>();
     
-    public ArrayList<Player> ReturnPlayer ()
-    {
+    public List<Player> ReturnPlayer ()
+    {//return the list of players
         return player;
     }
-    
-    public ArrayList<Achievement> ReturnAchievement()
-    {
-        return achieve;
-    }
-    
+      
     public void Read(String FileLoc)
     {
-        Player temp = new Player();
         csvFile = FileLoc;
         try
         {
             br = new BufferedReader(new FileReader(csvFile));
             while ((line = br.readLine()) != null) 
-            {
-                String[] Data = line.split(SplitBy);
+            {//read the csv file
+                String[] Data = line.split(SplitBy);//split the line into proper data pieces
                 if ("Player".equals(Data[0])) 
-                {
-                    temp.setUsername(Data[1]);
-                    temp.setTagName(Data[2]);
+                {//add the player into the arraylist
+                    player.add(new Player());
+                    player.get(player.size()-1).setUsername(Data[1]);
+                    player.get(player.size()-1).setTagName(Data[2]);
                 }
                 else if ("Achievement".equals(Data[0])) 
-                {
-                    temp.addAchievements(Data[1], Integer.parseInt(Data[2]), Integer.parseInt(Data[3]));
+                {//add the players achievements to the player
+                    player.get(player.size()-1).addAchievements(Data[1], Integer.parseInt(Data[2]), Integer.parseInt(Data[3]));
                 }
                 else
-                {
+                {//output error message for unexpected object type
                     System.out.println("Unexpected Object Type:"+Data[0]);
-                }
-                if (temp.GetAchievements().size() == 5) {
-                    player.add(new Player(temp.getUsername(),temp.getTagName()));
-                    for (int i = 0; i <temp.GetAchievements().size(); i++) {
-                        achieve.add(new Achievement(temp.GetAchievements().get(i).getDescription(),temp.GetAchievements().get(i).getLevel(),temp.GetAchievements().get(i).getMaxLevel(),temp.GetAchievements().get(i).getUsername()));
-                    }
-                    temp.clearAchievements();
-
                 }
             }
         }
         catch(Exception ex)
-        {
+        {//catch eqceptions and output
             System.out.println(ex.toString());
         }
     }

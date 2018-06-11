@@ -8,16 +8,28 @@ package Main;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.io.Serializable;
+
 
 /**
  *
  * @author Jaron Chen
  */
-public class Player {
+public class Player implements Serializable{
+    //variables of the player class
+    public static final long serialVersionUID = 5950169519310163575L;
     private String Username;
     private String TagName;
 
-    private ArrayList<Achievement> achievements = new ArrayList<Achievement>();
+    //getters, setters, and constructors of the class
+    public List<Achievement> getAchievements() {
+        return achievements;
+    }
+
+    public void setAchievements(List<Achievement> achievements) {
+        this.achievements = achievements;
+    }
+    private List<Achievement> achievements = new ArrayList<Achievement>();
     
     public String getUsername() {
         return Username;
@@ -38,29 +50,37 @@ public class Player {
     public Player() {
     }
 
-    public ArrayList<Achievement> GetAchievements()
+    public List<Achievement> GetAchievements()
     {
         return achievements;
     }
     
-    public Player(String Username, String TagName) {
+    public Player(String Username, String TagName, List<Achievement> achievement) {
         this.Username = Username;
         this.TagName = TagName;
+        this.achievements = achievement;
     }
     
+    //methods for adding achievements to player
     public void addAchievements(String Description, int Level, int MaxLevel)
     {
-        achievements.add(new Achievement(Description, Level, MaxLevel, Username));
+        achievements.add(new Achievement(Description, Level, MaxLevel));
     }
     
     public void addAchievements(Achievement A)
     {
         achievements.add(A);
     }
+    //methods for sorting by level and description
+    public void sortLevel()
+    {
+        achievements.sort(Comparator.comparing(Achievement::getLevel));
+    }
     public void sortDescription()
     {
         achievements.sort(Comparator.comparing(Achievement::getDescription));
     }
+    //method for searching the achievements list
     public Achievement Search(String SearchText)
     {
         Achievement output = new Achievement();
@@ -71,7 +91,7 @@ public class Player {
         }
         return output;
     }
-    
+    //method for clearing the achievements
     public void clearAchievements()
     {
         achievements.clear();

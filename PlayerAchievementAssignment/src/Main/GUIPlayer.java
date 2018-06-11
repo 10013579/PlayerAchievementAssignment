@@ -11,6 +11,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -20,9 +21,8 @@ import javax.swing.table.DefaultTableModel;
  * @author Jaron Chen
  */
 public class GUIPlayer extends javax.swing.JFrame {
-
-    private ArrayList<Player> player = new ArrayList<Player>();
-    private ArrayList<Achievement> achieve = new ArrayList<Achievement>();
+    //variables that are used in the methods/events
+    private List<Player> player = new ArrayList<Player>();
     private CSVRead reader = new CSVRead();
     private int PlayerNumber = 0;
     
@@ -45,15 +45,21 @@ public class GUIPlayer extends javax.swing.JFrame {
         btnExit = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblOutput = new javax.swing.JTable();
-        btnReadFile = new javax.swing.JButton();
-        lblFileLoc = new javax.swing.JLabel();
-        txtFileLocation = new javax.swing.JTextField();
         lblOutput = new javax.swing.JLabel();
         btnDisplayPlayer = new javax.swing.JButton();
         spnPlayer = new javax.swing.JSpinner();
         lblPlayer = new javax.swing.JLabel();
+        btnPDF = new javax.swing.JButton();
+        lblInput = new javax.swing.JLabel();
+        btnRead = new javax.swing.JButton();
+        txtInput = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         btnExit.setText("Exit");
         btnExit.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -75,15 +81,6 @@ public class GUIPlayer extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblOutput);
 
-        btnReadFile.setText("Read File");
-        btnReadFile.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnReadFileMouseClicked(evt);
-            }
-        });
-
-        lblFileLoc.setText("File Location:");
-
         lblOutput.setText("Achievements");
 
         btnDisplayPlayer.setText("Display Player");
@@ -95,6 +92,22 @@ public class GUIPlayer extends javax.swing.JFrame {
 
         lblPlayer.setText("Player:");
 
+        btnPDF.setText("PDF");
+        btnPDF.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnPDFMouseClicked(evt);
+            }
+        });
+
+        lblInput.setText("File:");
+
+        btnRead.setText("Read File");
+        btnRead.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnReadMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -102,25 +115,28 @@ public class GUIPlayer extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(lblPlayer)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(spnPlayer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnDisplayPlayer)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnExit))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblOutput)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(lblFileLoc)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtFileLocation, javax.swing.GroupLayout.PREFERRED_SIZE, 388, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnReadFile)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblPlayer)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(spnPlayer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnDisplayPlayer)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnPDF))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblInput)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtInput, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnRead)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnExit)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -132,96 +148,86 @@ public class GUIPlayer extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnReadFile)
-                    .addComponent(txtFileLocation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblFileLoc))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnExit)
                     .addComponent(btnDisplayPlayer)
                     .addComponent(spnPlayer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblPlayer))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(lblPlayer)
+                    .addComponent(btnPDF))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblInput)
+                    .addComponent(btnRead)
+                    .addComponent(txtInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnExitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExitMouseClicked
-        // exit button
+        //exit button
         System.exit(0);
     }//GEN-LAST:event_btnExitMouseClicked
 
-    private void btnReadFileMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReadFileMouseClicked
-        // runs the read code in the reader class
-        reader.Read(txtFileLocation.getText());
-        player = reader.ReturnPlayer();
-        achieve = reader.ReturnAchievement();
-        
-        //Player temp = new Player();
-        //String csvFile = txtFileLocation.getText();
-        //try
-        //{
-        //    br = new BufferedReader(new FileReader(csvFile));
-        //    while ((line = br.readLine()) != null) 
-        //    {
-        //        String[] Data = line.split(SplitBy);
-        //        if ("Player".equals(Data[0])) 
-        //        {
-        //            temp.clearAchievements();
-        //            temp.setUsername(Data[1]);
-        //            temp.setTagName(Data[2]);
-        //        }
-        //        else if ("Achievement".equals(Data[0])) 
-        //        {
-        //            temp.addAchievements(Data[1], Integer.parseInt(Data[2]), Integer.parseInt(Data[3]));
-        //        }
-        //        else
-        //        {
-        //            System.out.println("Unexpected Object Type:"+Data[0]);
-        //        }
-        //        if (temp.GetAchievements().size() == 5) {
-        //            player.add(new Player(temp.getUsername(),temp.getTagName()));
-        //            for (int i = 0; i <temp.GetAchievements().size(); i++) {
-        //                achieve.add(new Achievement(temp.GetAchievements().get(i).getDescription(),temp.GetAchievements().get(i).getLevel(),temp.GetAchievements().get(i).getMaxLevel(),temp.GetAchievements().get(i).getUsername()));
-        //            }
-        //            temp.clearAchievements();
-        //        }
-        //    }
-        //}
-        //catch(Exception ex)
-        //{
-        //    System.out.println(ex.toString());
-        //}
-    }//GEN-LAST:event_btnReadFileMouseClicked
-
     private void btnDisplayPlayerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDisplayPlayerMouseClicked
-        // TODO add your handling code here:   
+        // this button displays the player at the playernumber index of the arraylist  
         PlayerNumber = (int)spnPlayer.getValue();
-        if (PlayerNumber < player.size()) {
-            DefaultTableModel dm = new DefaultTableModel(0, 0);
+        if (PlayerNumber < player.size()) {//this takes the player at the index defined by playernumber
+            DefaultTableModel dm = new DefaultTableModel(0, 0);//this is the table model for the ui table
             Player tempPlyr = player.get(PlayerNumber);
-            Achievement tempAchv = new Achievement();
-            Achievement tempAchvFinal = new Achievement();
             DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss"); 
-            Calendar cal = Calendar.getInstance();
-            String header[] = new String[]{"Description", "Level", "Out of Possible"};
+            Calendar cal = Calendar.getInstance();//this is for getting the time to output
+            String header[] = new String[]{"Description", "Level", "Out of Possible"};//header for the table
             dm.setColumnIdentifiers(header);
-            tblOutput.setModel(dm);
-            for (int j = 0; j < achieve.size(); j++) {
-                 tempAchv = achieve.get(j);
-                 if (tempAchv.getUsername().equals(tempPlyr.getUsername())) {
-                    tempAchvFinal = tempAchv;
-                    dm.addRow(new String[]{tempAchvFinal.getDescription(),Integer.toString(tempAchvFinal.getLevel()),Integer.toString(tempAchvFinal.getMaxLevel())});
-                }
+            tblOutput.setModel(dm);//setting the table model
+            for (int j = 0; j < player.get(PlayerNumber).GetAchievements().size(); j++) {
+                dm.addRow(new String[]{player.get(PlayerNumber).GetAchievements().get(j).getDescription(),Integer.toString(player.get(PlayerNumber).GetAchievements().get(j).getLevel()),Integer.toString(player.get(PlayerNumber).GetAchievements().get(j).getMaxLevel())});
+                //adding the players achievements to the table model
             }
             lblOutput.setText("Achievements For "+ tempPlyr.getTagName()+ " at "+ df.format(cal.getTime()));
         }
         else
-        {
+        {//this shows when the playernumber selected is out of nounds of the arraylist
             JOptionPane.showMessageDialog(null, "There are no players at the selected number.", "InfoBox", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btnDisplayPlayerMouseClicked
+
+    private void btnPDFMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnPDFMouseClicked
+        //this calls the pdf creator to generate a pdf file of the players and achievements
+        PDFGenerator pdf = new PDFGenerator();
+        pdf.execute(player);
+    }//GEN-LAST:event_btnPDFMouseClicked
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        //this code outputs the player, the time, and the players achievements when the program is opened
+        reader.Read("C:/Users/Jaron Chen/Documents/JavaAchievement.csv");
+        player = reader.ReturnPlayer();//these take the player data from the csv file
+        PlayerNumber = (int)spnPlayer.getValue();
+        if (PlayerNumber < player.size()) {//this takes the player at the index defined by playernumber
+            DefaultTableModel dm = new DefaultTableModel(0, 0);//this is the table model for the ui table
+            Player tempPlyr = player.get(PlayerNumber);
+            DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss"); 
+            Calendar cal = Calendar.getInstance();//this is for getting the time to output
+            String header[] = new String[]{"Description", "Level", "Out of Possible"};//header for the table
+            dm.setColumnIdentifiers(header);
+            tblOutput.setModel(dm);//setting the table model
+            for (int j = 0; j < player.get(PlayerNumber).GetAchievements().size(); j++) {
+                dm.addRow(new String[]{player.get(PlayerNumber).GetAchievements().get(j).getDescription(),Integer.toString(player.get(PlayerNumber).GetAchievements().get(j).getLevel()),Integer.toString(player.get(PlayerNumber).GetAchievements().get(j).getMaxLevel())});
+                //adding the players achievements to the table model
+            }
+            lblOutput.setText("Achievements For "+ tempPlyr.getTagName()+ " at "+ df.format(cal.getTime()));
+        }
+        else
+        {//this shows when the playernumber selected is out of nounds of the arraylist
+            JOptionPane.showMessageDialog(null, "There are no players at the selected number.", "InfoBox", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_formWindowOpened
+
+    private void btnReadMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReadMouseClicked
+        // button for reading CSV file
+        reader.Read(txtInput.getText());
+        player = reader.ReturnPlayer();
+    }//GEN-LAST:event_btnReadMouseClicked
 
     /**
      * @param args the command line arguments
@@ -261,14 +267,15 @@ public class GUIPlayer extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDisplayPlayer;
     private javax.swing.JButton btnExit;
-    private javax.swing.JButton btnReadFile;
+    private javax.swing.JButton btnPDF;
+    private javax.swing.JButton btnRead;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lblFileLoc;
+    private javax.swing.JLabel lblInput;
     private javax.swing.JLabel lblOutput;
     private javax.swing.JLabel lblPlayer;
     private javax.swing.JSpinner spnPlayer;
     private javax.swing.JTable tblOutput;
-    private javax.swing.JTextField txtFileLocation;
+    private javax.swing.JTextField txtInput;
     // End of variables declaration//GEN-END:variables
 }
 
